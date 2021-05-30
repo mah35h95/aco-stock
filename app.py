@@ -16,7 +16,7 @@ START = st.text_input("Enter Starting date as YYYY-MM-DD",
 TODAY = date.today().strftime("%Y-%m-%d")
 "Today's date: ", TODAY
 
-selected_stock = st.text_input("Enter the Stock Code of company", "AAPL")
+selected_stock = st.text_input("Enter the Stock Code of Company", "AAPL")
 
 n_days = st.slider('Days of prediction:', 1, 365)
 period = n_days
@@ -33,7 +33,7 @@ data_load_state = st.text('Loading data...')
 data = load_data(selected_stock)
 data_load_state.text('Loading data... done!')
 
-st.subheader('Stock Market Data')
+st.subheader(f'Stock Market Data of {selected_stock}')
 st.subheader('Raw data')
 'The Complete Stock Data as extracted from Yahoo Finance: '
 data
