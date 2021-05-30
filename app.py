@@ -16,8 +16,7 @@ START = st.text_input("Enter Starting date as YYYY-MM-DD",
 TODAY = date.today().strftime("%Y-%m-%d")
 "Today's date: ", TODAY
 
-stocks = ('GOOG', 'AAPL', 'MSFT', 'GME')
-selected_stock = st.selectbox('Select dataset for prediction', stocks)
+selected_stock = st.text_input("Enter the Stock Code of company", "AAPL")
 
 n_days = st.slider('Days of prediction:', 1, 365)
 period = n_days
