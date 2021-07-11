@@ -1,6 +1,7 @@
 # pip install streamlit fbprophet yfinance plotly pip install --upgrade pip
 import streamlit as st
 from datetime import date
+import pandas as pd
 
 import yfinance as yf
 from fbprophet import Prophet
