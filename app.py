@@ -16,7 +16,9 @@ START = st.text_input("Enter Starting date as YYYY-MM-DD",
 TODAY = date.today().strftime("%Y-%m-%d")
 "Today's date: ", TODAY
 
-selected_stock = st.text_input("Enter the Stock Code of Company", "AAPL")
+# selected_stock = st.text_input("Enter the Stock Code of Company", "AAPL")
+ticker_list = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/s-and-p-500-companies/master/data/constituents_symbols.txt')
+selected_stock = st.selectbox('Stock ticker', ticker_list) # Select ticker symbol
 
 n_days = st.slider('Days of prediction:', 1, 365)
 period = n_days
