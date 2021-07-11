@@ -31,10 +31,9 @@ def load_data(ticker):
     data.reset_index(inplace=True)
     return data
 
-data = 0
 # data_load_state = st.text('Loading data...')
 data = load_data(selected_stock)
-data
+st.write(data)
 # data_load_state.text('Loading data... done!')
 
 st.subheader(f'Stock Market Data of {selected_stock}')
