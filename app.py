@@ -28,12 +28,13 @@ period = n_days
 # @st.cache
 def load_data(ticker):
     data = yf.download(ticker, START, TODAY)
-#     data.reset_index(inplace=True)
+    data.reset_index(inplace=True)
     return data
 
-
+data = 0
 # data_load_state = st.text('Loading data...')
 data = load_data(selected_stock)
+data
 # data_load_state.text('Loading data... done!')
 
 st.subheader(f'Stock Market Data of {selected_stock}')
