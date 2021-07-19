@@ -2,6 +2,7 @@
 import streamlit as st
 from datetime import date
 import pandas as pd
+import cufflinks as cf
 
 import yfinance as yf
 from fbprophet import Prophet
@@ -11,39 +12,46 @@ from plotly import graph_objs as go
 
 st.title('Stock Forecast App')
 
-START = st.text_input("Enter Starting date as YYYY-MM-DD",
-                      "2015-01-01")
-'You Enterted the starting date: ', START
-TODAY = date.today().strftime("%Y-%m-%d")
-"Today's date: ", TODAY
+START = st.date_input("Start date", date(2015, 1, 1))
+# 'You Enterted the starting date: ', START
+# TODAY = date.today().strftime("%Y-%m-%d")
+TODAY = st.date_input("End date", date.today())
+# "Today's date: ", TODAY
 
-# selected_stock = st.text_input("Enter the Stock Code of Company", "AAPL")
-ticker_list = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/s-and-p-500-companies/master/data/constituents_symbols.txt')
-selected_stock = st.selectbox('Stock ticker', ticker_list) # Select ticker symbol
+selected_stock = st.text_input("Enter the Stock Code of Company", "AAPL")
+# ticker_list = pd.read_csv(
+#     'https://raw.githubusercontent.com/dataprofessor/s-and-p-500-companies/master/data/constituents_symbols.txt')
+# selected_stock = st.selectbox(
+#     'Stock ticker', ticker_list)  # Select ticker symbol
 
 n_days = st.slider('Days of prediction:', 1, 365)
 period = n_days
 
 
-@st.cache
+# @st.cache
 def load_data(ticker):
     data = yf.download(ticker, START, TODAY)
     data.reset_index(inplace=True)
     return data
 
+
 data_load_state = st.text('Loading data...')
 data = load_data(selected_stock)
 data_load_state.text('Loading data... done!')
 
-st.subheader(f'Stock Market Data of {selected_stock}')
+tickerData = yf.Ticker(selected_stock)  # Get ticker data
 
-tickerData = yf.Ticker(selected_stock) # Get ticker data
+string_name = tickerData.info['longName']
+st.subheader(f'Stock Market Data of {string_name} ({selected_stock})')
+
+
+# get the historical prices for this ticker
+# tickerDf = tickerData.history(period=period, start=START, end=TODAY)
 
 # Ticker information
 string_logo = '<img src=%s>' % tickerData.info['logo_url']
 st.markdown(string_logo, unsafe_allow_html=True)
 
-string_name = tickerData.info['longName']
 st.header('**%s**' % string_name)
 
 string_summary = tickerData.info['longBusinessSummary']
@@ -52,8 +60,6 @@ st.info(string_summary)
 st.subheader('Raw data')
 'The Complete Stock Data as extracted from Yahoo Finance: '
 data
-
-
 
 # Plot raw data
 
@@ -70,6 +76,13 @@ def plot_raw_data():
 
 
 plot_raw_data()
+
+st.header('**Bollinger Bands**')
+# qf = cf.QuantFig(tickerDf, title='First Quant Figure', legend='top', name='GS')
+qf = cf.QuantFig(data, title='Quant Figure', legend='bottom', name='GS')
+qf.add_bollinger_bands()
+fig = qf.iplot(asFigure=True)
+st.plotly_chart(fig)
 
 st.subheader('Moving Averages')
 
@@ -93,8 +106,8 @@ data["mov_avg_open"] = data['Open'].rolling(
 st.line_chart(data[["mov_avg_open", "Open"]])
 
 
-def aco():  # activate ACO
-    iteration = 1000
+def aco(StockName, pheromne):  # activate ACO
+    iteration = 1050
     n_ants = 500000
     n_citys = 500000
     m = n_ants
@@ -207,9 +220,9 @@ def aco():  # activate ACO
                     # delta_distance will be more with min_dist i.e adding more weight to that route peromne
 
 
-def predict():
-    m.StockName = aco.max.pheromne  # Upper Limit
-    m2, m2.Stockname = aco.max.pheromne
+def predict(StockName):
+    m.StockName = aco(StockName, max.pherome)  # Upper Limit
+    m.Stockname = aco(StockName, min.pheromne)  # Lower Limit
 
 
 # Predict forecast with Prophet.
@@ -225,6 +238,7 @@ forecast = m.predict(future)
 st.subheader('Forecast data')
 st.write(forecast.tail(10))
 print(forecast.tail())
+
 
 st.write(f'Forecast plot for {n_days} days')
 fig1 = plot_plotly(m, forecast)
